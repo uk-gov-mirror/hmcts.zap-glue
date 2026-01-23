@@ -32,7 +32,9 @@ jobs:
           ts=$(date +%s)
           echo "::set-output name=BUILD_ID::${sha}-${ts}"
 
-      # HMCTSProd
+      ###################################################
+      # HMCTSPROD ACR
+      ###################################################
       - name: 'ACR Login - ${{ env.NEW_AZURE_CONTAINER_REGISTRY_URL }}'
         run: |
           az acr login --name hmctsprod
@@ -61,7 +63,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # HMCTS Public - To be deprecated once HMCTSPROD migration is complete
+      ###################################################
+      # HMCTSPUBLIC ACR - Push
+      ###################################################
       - name: Build and push
         uses: hmcts/cnp-githubactions-library/container-build-push@main
         with:
