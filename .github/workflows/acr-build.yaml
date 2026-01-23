@@ -9,11 +9,21 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     env:
       AZURE_CONTAINER_REGISTRY_URL: hmctspublic.azurecr.io
+      NEW_AZURE_CONTAINER_REGISTRY_URL: hmctsprod.azurecr.io
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: 'Az CLI login'
+        uses: azure/login@v2
+        with:
+          client-id: c6a3a50b-762f-4b4f-b7ec-f1d84be20cef # DTS Platform Operations GitHub Actions ACR Publisher 1
+          tenant-id: 531ff96d-0ae9-462a-8d2d-bec7c0b42082 # HMCTS.NET
+          allow-no-subscriptions: true
 
       - name: Generate build ID
         id: prep
@@ -22,6 +32,39 @@ jobs:
           ts=$(date +%s)
           echo "::set-output name=BUILD_ID::${sha}-${ts}"
 
+      ###################################################
+      # HMCTSPROD ACR
+      ###################################################
+      - name: 'ACR Login - ${{ env.NEW_AZURE_CONTAINER_REGISTRY_URL }}'
+        run: |
+          az acr login --name hmctsprod
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.NEW_AZURE_CONTAINER_REGISTRY_URL }}/zap-glue
+          tags: |
+            pr-${{ steps.prep.outputs.BUILD_ID }}
+
+      - name: 'Build and push prod image - ${{ env.NEW_AZURE_CONTAINER_REGISTRY_URL }} - Zap ${{ steps.prep.outputs.BUILD_ID }}'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      ###################################################
+      # HMCTSPUBLIC ACR - Push
+      ###################################################
       - name: Build and push
         uses: hmcts/cnp-githubactions-library/container-build-push@main
         with:
