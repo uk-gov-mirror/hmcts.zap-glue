@@ -49,7 +49,7 @@ jobs:
 
       - name: Extract metadata (tags, labels)
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.NEW_AZURE_CONTAINER_REGISTRY_URL }}/zap-glue
           tags: |
