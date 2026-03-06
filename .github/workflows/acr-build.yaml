@@ -54,7 +54,7 @@ jobs:
             pr-${{ steps.prep.outputs.BUILD_ID }}
 
       - name: 'Build and push prod image - ${{ env.NEW_AZURE_CONTAINER_REGISTRY_URL }} - Zap ${{ steps.prep.outputs.BUILD_ID }}'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
