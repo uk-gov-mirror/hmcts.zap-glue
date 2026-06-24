@@ -16,7 +16,7 @@ jobs:
       NEW_AZURE_CONTAINER_REGISTRY_URL: hmctsprod.azurecr.io
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: 'Az CLI login'
         uses: azure/login@v2
