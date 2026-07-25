@@ -3,7 +3,7 @@ FROM ruby:3.4.7-trixie
 ################################################################################################
 #       Environment
  # renovate: datasource=github-releases depName=trufflesecurity/trufflehog
-ARG TRUFFLEHOG_VERSION=3.92.4
+ARG TRUFFLEHOG_VERSION=3.96.0
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y git-core sudo curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libffi-dev libgdbm-dev libncurses5-dev automake libtool bison libffi-dev gnupg patch gawk g++ gcc make libc6-dev libcurl3-dev autoconf libtool ncurses-dev zlib1g openssl libcurl4-openssl-dev libgmp-dev clamav md5deep nodejs npm default-jre unzip python3 python3-pip jq
